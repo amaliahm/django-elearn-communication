@@ -1,21 +1,23 @@
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponse
 from django.http import JsonResponse
-from .models import DownVote, Question,Answer,Comment, UpVote
+from .models import Question,Answer,Comment,UpVote,DownVote
 from django.core.paginator import Paginator
-from .forms import AnswerForm ,QuestionForm,ProfileForm
 from django.contrib import messages
+from .forms import AnswerForm,QuestionForm,ProfileForm
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Count
 # Home Page
 def home(request):
     if 'q' in request.GET:
         q=request.GET['q']
-        quests=Question.objects.filter(title__icontains=q).order_by('-id')
+        quests=Question.objects.annotate(total_comments=Count('answer__comment')).filter(title__icontains=q).order_by('-id')
     else:
-        quests=Question.objects.all().order_by('-id')
+        quests=Question.objects.annotate(total_comments=Count('answer__comment')).all().order_by('-id')
     paginator=Paginator(quests,10)
     page_num=request.GET.get('page',1)
     quests=paginator.page(page_num)
     return render(request,'home.html',{'quests':quests})
+
 # Detail
 def detail(request,id):
     quest=Question.objects.get(pk=id)
@@ -36,6 +38,7 @@ def detail(request,id):
         'answers':answers,
         'answerform':answerform
     })
+
 # Save Comment
 def save_comment(request):
     if request.method=='POST':
@@ -48,8 +51,7 @@ def save_comment(request):
             comment=comment,
             user=user
         )
-    return JsonResponse({'bool':True})
-
+        return JsonResponse({'bool':True})
 
 # Save Upvote
 def save_upvote(request):
@@ -83,6 +85,15 @@ def save_downvote(request):
             )
             return JsonResponse({'bool':True})
 
+# User Register
+def register(request):
+    form=UserCreationForm
+    if request.method=='POST':
+        regForm=UserCreationForm(request.POST)
+        if regForm.is_valid():
+            regForm.save()
+            messages.success(request,'User has been registered!!')
+    return render(request,'registration/register.html',{'form':form})
 
 # Ask Form
 def ask_form(request):
@@ -97,7 +108,6 @@ def ask_form(request):
     return render(request,'ask-question.html',{'form':form})
 
 
-
 # Questions according to tag
 def tag(request,tag):
     quests=Question.objects.annotate(total_comments=Count('answer__comment')).filter(tags__icontains=tag).order_by('-id')
@@ -105,27 +115,6 @@ def tag(request,tag):
     page_num=request.GET.get('page',1)
     quests=paginator.page(page_num)
     return render(request,'tag.html',{'quests':quests,'tag':tag})
-
-
-
-def tags(request):
-    quests=Question.objects.all()
-    tags=[]
-    for quest in quests:
-        qtags=[tag.strip() for tag in quest.tags.split(',')]
-        for tag in qtags:
-            if tag not in tags:
-                tags.append(tag)
-    # Fetch Questions
-    tag_with_count=[]
-    for tag in tags:
-        tag_data={
-            'name':tag,
-            'count':Question.objects.filter(tags__icontains=tag).count()
-        }
-        tag_with_count.append(tag_data)
-    return render(request,'tags.html',{'tags':tag_with_count})
-
 
 # Profile
 def profile(request):
@@ -148,3 +137,24 @@ def profile(request):
         'upvotes':upvotes,
         'downvotes':downvotes,
     })
+
+# Tags Page
+def tags(request):
+    quests=Question.objects.all()
+    tags=[]
+    for quest in quests:
+        qtags=[tag.strip() for tag in quest.tags.split(',')]
+        for tag in qtags:
+            if tag not in tags:
+                tags.append(tag)
+    # Fetch Questions
+    tag_with_count=[]
+    for tag in tags:
+        tag_data={
+            'name':tag,
+            'count':Question.objects.filter(tags__icontains=tag).count()
+        }
+        tag_with_count.append(tag_data)
+    return render(request,'tags.html',{'tags':tag_with_count})
+        
+        

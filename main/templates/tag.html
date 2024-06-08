@@ -6,15 +6,22 @@
     <!-- Question List -->
     <div class="container py-5">
         {% for quest in quests %}
-        <div class="card mb-3">
-            <div class="card-body">
-                <h4 class="card-title"><a href="/detail/{{quest.id}}">{{quest.title}}</a></h4>
-                <p class="card-text">{{quest.detail}}</p>
+                
+
+        <div class="card mb-4" style="border: 0;">
+            <div class="card-body" style="background: rgba(33, 36, 177, 0.2); color: white;
+            border: 1px solid #2124b0; border-radius: 20px;">
+                <h4 class="card-title" ><a style="color: #2124b0; text-decoration: none;" href="/detail/{{quest.id}}">{{quest.title}}</a></h4>
+                <p class="card-text" style="color: rgb(94, 91, 91);">{{quest.detail}}</p>
                 <p>
-                    <a href="#" class="mr-2">{{quest.user.username}}</a>
-                    <a href="#" class="mr-2">{{quest.answer_set.count}} Answers</a>
-                    <a href="#" class="mr-2">{{quest.total_comments}} Comments</a>
+                    <a href="#" style="color: #2124b0; text-decoration: none;" class="mr-2">{{quest.user.username}}</a>
+                    <a href="#" style="color: #2124b0; text-decoration: none;" class="mr-2">{{quest.answer_set.count}} Answers</a>
+                    <a href="#" style="color: #2124b0; text-decoration: none;" class="mr-2">{{quest.total_comments}} Comments</a>
                 </p>
+                <hr/>
+                <div style="color: black; letter-spacing: 1.5px;" >
+                    <small>{{quest.add_time}}</small>
+                </div>
             </div>
         </div>
         {% endfor %}

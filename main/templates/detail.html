@@ -4,25 +4,35 @@
 {% block title %}{{quest.title}}{% endblock %}
 {% block content %}
 <!-- Question List -->
-    <div class="container">
-        <h2 class="my-4">{{quest.title}}</h2>
+<div class="container-xxl py-5">
+    <div class="container px-lg-5">
+        <div class='section-title position-relative text-center mb-1 mt-0 pb-2 wow fadeInUp' data-wow-delay="0.1s">
+<h1 class='mt-2'>
+    Cohorte-1CS 2023-2024
+</h1>
+        </div>
+    </div>
+</div>
+    <div class="container" style="border: 1px solid #2124b0; border-radius: 16px; background-color: rgba(33, 36, 176, 0.1); margin-bottom: 20px;">
+
+        <h2 class="my-4" style="color: #2124b0;">{{quest.title}}</h2>
         <p>{{quest.detail}}</p>
         <p>
             tags:
             {% for tag in tags %}
-            <a href="/tag/{{tag|slugify}}" class="badge badge-secondary p-1">{{tag}}</a>
+            <a href="/tag/{{tag|slugify}}" class="badge badge-secondary p-1" style="background-color: #2124b0; padding: 2px 5px;">{{tag}}</a>
             {% endfor %}
         </p>
         <p>
-            <span class="mr-4">{{quest.add_time|date:'d/m/Y'}}</span>
-            <a href="#">{{quest.user.username}}</a>
+            <span class="mr-4" style="color: rgba(128, 128, 128, 0.8);">{{quest.add_time|date:'d/m/Y'}}</span>
+            <a href="#" style="text-decoration: none; color: #2124b0;">{{quest.user.username}}</a>
         </p>
         <hr/>
         {% for answer in answers %}
         <div class="row">
             <div class="col-1" style="text-align: center;">
                 <div class="upvote">
-                    <strong class="upvote-count-{{answer.id}}">{{answer.upvote_set.count}}</strong><br/>
+                    <strong class="upvote-count-{{answer.id}}" style="margin-left: 5px;">{{answer.upvote_set.count}}</strong><br/>
                     <span class="text-success">
                         <i class="fa fa-arrow-up fa-2x upvote-click" data-answer="{{answer.id}}"></i>
                     </span>
@@ -31,7 +41,7 @@
                     <span class="text-danger">
                         <i class="fa fa-arrow-down fa-2x downvote-click" data-answer="{{answer.id}}"></i>
                     </span><br/>
-                    <strong class="downvote-count-{{answer.id}}">{{answer.downvote_set.count}}</strong>
+                    <strong class="downvote-count-{{answer.id}}" style="margin-left: 5px;">{{answer.downvote_set.count}}</strong>
                 </div>
             </div>
             <div class="col-11">
@@ -39,19 +49,19 @@
                     {{ answer.detail }}
                 </p>
                 <p>
-                    <a href="#" class="mr-3">{{answer.user.username}}</a>
+                    <a href="#" class="mr-3" style="color: #2124b0; text-decoration: none;">{{answer.user.username}}</a>
                     <span class="mr-3"><span class="comment-count-{{answer.id}}">{{answer.comment_set.count}}</span> comments</span>
-                    <span>{{answer.add_time|date:'d/m/Y h:i:s'}}</span>
+                    <span style="color: rgba(128, 128, 128, 0.8);">{{answer.add_time|date:'d/m/Y h:i:s'}}</span>
                 </p>
                 <!-- Comment Section Start -->
                 <h3 class="my-4">Comment</h3>
                 <div class="comment-wrapper-{{answer.id}}">
                     {% for comment in answer.comment_set.all %}
-                    <div class="card mb-2">
-                        <div class="card-body">
+                    <div class="card mb-2" style="background-color: green; border-radius: 16px; background-color: rgba(33, 36, 176, 0.3);">
+                        <div class="card-body" >
                             <p>{{comment.comment}}</p>
                             <p>
-                                <a href="#">{{comment.user.username}}</a>
+                                <a href="#" style="color: #2124b0; text-decoration: none;">{{comment.user.username}}</a>
                             </p>
                         </div>
                     </div>
@@ -59,11 +69,11 @@
                 </div>
                 {% if user.is_authenticated %}
                 <!-- Comment Form -->
-                <div class="card my-3">
+                <div class="card my-3" style="background-color: green; border-radius: 16px; background-color: rgba(33, 36, 176, 0.3);">
                     <h6 class="card-header">Add Comment</h6>
                     <div class="card-body">
                         <textarea class="form-control comment-text-{{answer.id}}"></textarea>
-                        <button type="button" data-answer="{{answer.id}}" class="btn btn-dark my-3 save-comment">Submit</button>
+                        <button type="button" data-answer="{{answer.id}}" class="btn btn-dark my-3 save-comment" style="background-color: #2124b0; color: white; border: none;">Submit</button>
                     </div>
                 </div>
                 {% endif %}
@@ -74,15 +84,15 @@
 
         {% if user.is_authenticated %}
         {% for msg in messages %}
-            <p class="text-success">{{msg}}</p>
+            <p class="text-success" >{{msg}}</p>
         {% endfor %}
-        <form method="post">
+        <form method="post" style="background-color: green; border-radius: 16px; background-color: rgba(33, 36, 176, 0.3);">
             {% csrf_token %}
             <table class="table table-bordered">
                 {{answerform.as_table}}
                 <tr>
                     <td colspan="2">
-                        <input type="submit" class="btn btn-dark" />
+                        <input type="submit" class="btn btn-dark" style="background-color: #2124b0; color: white; border: none;" />
                     </td>
                 </tr>
             </table>
